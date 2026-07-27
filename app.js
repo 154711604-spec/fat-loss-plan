@@ -940,7 +940,19 @@ function importData() {
                 }
                 if (confirm('导入数据将覆盖当前所有记录，确定继续吗？')) {
                     appData = imported.data;
-                    appData.currentDate = new Date(appData.currentDate);
+                    
+                    // 保留原始开始日期，用于计算30天计划进度
+                    // 但如果备份的日期比今天还晚，说明是跨天导入，用备份日期
+                    const backupDate = new Date(imported.data.currentDate);
+                    const today = new Date();
+                    // 如果备份日期不是今天，保留原始日期用于计算天数进度
+                    appData.currentDate = backupDate;
+                    
+                    // 体重记录保留原始日期，不改动
+                    // 但如果今天的体重还没记录，提示用户
+                    const todayStr = today.toISOString().split('T')[0];
+                    const hasTodayRecord = appData.weightRecords.some(r => r.date === todayStr);
+                    
                     saveData();
                     initTheme();
                     updateHomePage();
@@ -949,7 +961,13 @@ function importData() {
                     updateExercisePage();
                     updateSettingsPage();
                     renderPlanCalendar();
-                    showToast('数据导入成功');
+                    renderDailySummary();
+                    
+                    if (!hasTodayRecord) {
+                        showToast('数据导入成功，别忘了记录今日体重哦');
+                    } else {
+                        showToast('数据导入成功');
+                    }
                 }
             } catch(err) {
                 alert('文件格式不正确，请选择正确的备份文件');
