@@ -912,11 +912,34 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    margin-bottom: 10px;
 }
 
 .btn-secondary:hover {
     background: var(--primary-light);
     border-color: var(--primary-color);
+}
+
+/* ===== Toast 提示 ===== */
+.toast-msg {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 9999;
+    animation: toastIn 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+@keyframes toastIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 /* ===== 30天计划日历 ===== */

@@ -561,8 +561,62 @@ function saveSettings() {
 function resetData() {
     if (confirm('确定要重置所有数据吗？此操作不可恢复！')) {
         localStorage.removeItem('fatLossData');
+        localStorage.removeItem('fatLossData_bak');
         location.reload();
     }
+}
+
+// ===== 数据导出/导入 =====
+function exportData() {
+    const exportObj = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        data: appData
+    };
+    const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `减脂计划备份_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('数据已导出');
+}
+
+function importData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            try {
+                const imported = JSON.parse(event.target.result);
+                if (!imported.data || !imported.data.user) {
+                    throw new Error('无效的备份文件');
+                }
+                if (confirm('导入数据将覆盖当前所有记录，确定继续吗？')) {
+                    appData = imported.data;
+                    appData.currentDate = new Date(appData.currentDate);
+                    saveData();
+                    initTheme();
+                    updateHomePage();
+                    updateWeightPage();
+                    updateDietPage();
+                    updateExercisePage();
+                    updateSettingsPage();
+                    renderPlanCalendar();
+                    showToast('数据导入成功');
+                }
+            } catch(err) {
+                alert('文件格式不正确，请选择正确的备份文件');
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
 }
 
 // ===== 30天计划日历 =====
@@ -614,3 +668,14 @@ function checkDailyReset() {
 
 // 页面加载时检查是否需要重置
 checkDailyReset();
+
+// ===== Toast 提示 =====
+function showToast(msg) {
+    const existing = document.querySelector('.toast-msg');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast-msg';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
