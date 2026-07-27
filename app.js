@@ -226,6 +226,7 @@ function editCurrentWeight() {
         appData.weightRecords[existingIndex].weight = weight;
     } else {
         appData.weightRecords.push({ date: today, weight });
+        appData.weightRecords.sort((a, b) => a.date.localeCompare(b.date));
     }
     
     saveData();
@@ -292,12 +293,14 @@ function recordWeight() {
 
     const today = new Date().toISOString().split('T')[0];
 
-    // 检查今天是否已记录
+    // 检查今天是否已记录，有则更新，没有则添加新的
     const existingIndex = appData.weightRecords.findIndex(r => r.date === today);
     if (existingIndex >= 0) {
         appData.weightRecords[existingIndex].weight = weight;
     } else {
         appData.weightRecords.push({ date: today, weight });
+        // 按日期排序，确保顺序正确
+        appData.weightRecords.sort((a, b) => a.date.localeCompare(b.date));
     }
 
     saveData();
@@ -311,6 +314,7 @@ function recordWeight() {
         weightCheckItem.classList.add('checked');
         updateCheckinProgress();
     }
+    showToast('体重记录成功');
 }
 
 function updateWeightPage() {
@@ -1164,13 +1168,13 @@ function renderPlanCalendar() {
     calendar.innerHTML = html;
 }
 
-// 检查是否需要重置每日数据
+// 检查是否需要重置每日数据（只重置饮食和运动，不删体重记录）
 function checkDailyReset() {
     const today = new Date().toISOString().split('T')[0];
     const lastVisit = localStorage.getItem('lastVisit');
 
+    // 只有上次访问日期存在且不等于今天时，才重置今日饮食和运动
     if (lastVisit && lastVisit !== today) {
-        // 新的一天，重置今日数据
         appData.todayMeals = { breakfast: null, lunch: null, dinner: null };
         appData.todayExercises = [];
     }
@@ -1178,9 +1182,6 @@ function checkDailyReset() {
     localStorage.setItem('lastVisit', today);
     saveData();
 }
-
-// 页面加载时检查是否需要重置
-checkDailyReset();
 
 // ===== Toast 提示 =====
 function showToast(msg) {
@@ -1192,3 +1193,13 @@ function showToast(msg) {
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2000);
 }
+
+// ===== 防止数据丢失：页面隐藏前强制保存 =====
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+        saveData();
+    }
+});
+
+// 每隔30秒自动保存一次
+setInterval(saveData, 30000);
