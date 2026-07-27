@@ -766,6 +766,52 @@ body {
     border-radius: 14px;
 }
 
+.meal-text-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.meal-text-input input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 14px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    outline: none;
+}
+
+.meal-text-input .cal-input {
+    flex: 0 0 100px;
+    min-width: 80px;
+}
+
+.meal-text-input input:focus {
+    border-color: var(--primary-color);
+}
+
+.meal-input-divider {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.meal-input-divider::before,
+.meal-input-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.meal-input-divider span {
+    padding: 0 12px;
+}
+
 .meal-photo-section p {
     font-size: 13px;
     color: var(--text-secondary);
@@ -853,6 +899,26 @@ body {
 
 .custom-exercise {
     padding: 10px 0;
+}
+
+.auto-badge {
+    display: inline-block;
+    background: var(--success-color);
+    color: white;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    margin-left: 6px;
+    font-weight: 600;
+}
+
+.cal-estimate-hint {
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    min-height: 24px;
 }
 
 .exercise-list {

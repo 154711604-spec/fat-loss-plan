@@ -300,7 +300,12 @@
                                 </div>
                             </div>
                             <div class="meal-photo-section">
-                                <p>上传实际早餐照片，帮你估算热量</p>
+                                <p>记录实际吃了什么</p>
+                                <div class="meal-text-input">
+                                    <input type="text" id="breakfast-text" placeholder="输入食物名称，如：两个包子+豆浆" onkeyup="handleMealText('breakfast')">
+                                    <input type="number" id="breakfast-cal" placeholder="热量(kcal)" onkeyup="handleMealText('breakfast')" class="cal-input">
+                                </div>
+                                <div class="meal-input-divider"><span>或者</span></div>
                                 <div class="photo-upload" onclick="document.getElementById('breakfast-photo').click()">
                                     <span>📷</span>
                                     <span>点击上传照片</span>
@@ -342,7 +347,12 @@
                                 </div>
                             </div>
                             <div class="meal-photo-section">
-                                <p>上传实际午餐照片，帮你估算热量</p>
+                                <p>记录实际吃了什么</p>
+                                <div class="meal-text-input">
+                                    <input type="text" id="lunch-text" placeholder="输入食物名称，如：黄焖鸡米饭" onkeyup="handleMealText('lunch')">
+                                    <input type="number" id="lunch-cal" placeholder="热量(kcal)" onkeyup="handleMealText('lunch')" class="cal-input">
+                                </div>
+                                <div class="meal-input-divider"><span>或者</span></div>
                                 <div class="photo-upload" onclick="document.getElementById('lunch-photo').click()">
                                     <span>📷</span>
                                     <span>点击上传照片</span>
@@ -384,7 +394,12 @@
                                 </div>
                             </div>
                             <div class="meal-photo-section">
-                                <p>上传实际晚餐照片，帮你估算热量</p>
+                                <p>记录实际吃了什么</p>
+                                <div class="meal-text-input">
+                                    <input type="text" id="dinner-text" placeholder="输入食物名称，如：蔬菜沙拉+鸡胸肉" onkeyup="handleMealText('dinner')">
+                                    <input type="number" id="dinner-cal" placeholder="热量(kcal)" onkeyup="handleMealText('dinner')" class="cal-input">
+                                </div>
+                                <div class="meal-input-divider"><span>或者</span></div>
                                 <div class="photo-upload" onclick="document.getElementById('dinner-photo').click()">
                                     <span>📷</span>
                                     <span>点击上传照片</span>
@@ -446,16 +461,17 @@
                             <div class="custom-exercise">
                                 <div class="form-group">
                                     <label>运动项目</label>
-                                    <input type="text" id="custom-exercise-name" placeholder="例如：跳绳、骑车">
+                                    <input type="text" id="custom-exercise-name" placeholder="例如：跳绳、骑车、跑步" onkeyup="autoEstimateCal()">
                                 </div>
                                 <div class="form-group">
                                     <label>运动时长（分钟）</label>
-                                    <input type="number" id="custom-exercise-duration" placeholder="30">
+                                    <input type="number" id="custom-exercise-duration" placeholder="30" onkeyup="autoEstimateCal()">
                                 </div>
                                 <div class="form-group">
-                                    <label>消耗热量（kcal）</label>
-                                    <input type="number" id="custom-exercise-cal" placeholder="150">
+                                    <label>消耗热量（kcal）<span class="auto-badge">自动估算</span></label>
+                                    <input type="number" id="custom-exercise-cal" placeholder="自动计算">
                                 </div>
+                                <div class="cal-estimate-hint" id="cal-estimate-hint"></div>
                                 <button class="btn-start" onclick="addCustomExercise()">添加运动记录</button>
                             </div>
                         </div>

@@ -431,6 +431,30 @@ function handlePhotoUpload(input, mealType) {
     reader.readAsDataURL(file);
 }
 
+// 文字输入食物
+function handleMealText(mealType) {
+    const nameInput = document.getElementById(`${mealType}-text`);
+    const calInput = document.getElementById(`${mealType}-cal`);
+    const name = nameInput.value.trim();
+    const cal = parseInt(calInput.value);
+
+    if (!name && !cal) return; // 两个都空就不保存
+
+    appData.todayMeals[mealType] = {
+        name: name || `未命名${mealType === 'breakfast' ? '早餐' : mealType === 'lunch' ? '午餐' : '晚餐'}`,
+        cal: cal || 0
+    };
+    saveData();
+    updateHomePage();
+
+    // 自动勾选饮食打卡
+    const dietCheckItem = document.querySelector('.check-item:nth-child(2)');
+    if (dietCheckItem && !dietCheckItem.classList.contains('checked')) {
+        dietCheckItem.classList.add('checked');
+        updateCheckinProgress();
+    }
+}
+
 function updateDietPage() {
     // 更新已选状态
     document.querySelectorAll('.meal-item').forEach(item => {
@@ -472,13 +496,18 @@ function selectExercise(name, calories) {
 }
 
 function addCustomExercise() {
-    const name = document.getElementById('custom-exercise-name').value;
+    const name = document.getElementById('custom-exercise-name').value.trim();
     const duration = parseInt(document.getElementById('custom-exercise-duration').value);
-    const calories = parseInt(document.getElementById('custom-exercise-cal').value);
+    let calories = parseInt(document.getElementById('custom-exercise-cal').value);
 
-    if (!name || !duration || !calories) {
-        alert('请填写完整的运动信息');
+    if (!name || !duration) {
+        alert('请填写运动项目和时长');
         return;
+    }
+
+    // 如果没填热量，自动估算
+    if (!calories || isNaN(calories)) {
+        calories = estimateCalories(name, duration);
     }
 
     appData.todayExercises.push({
@@ -495,12 +524,67 @@ function addCustomExercise() {
     document.getElementById('custom-exercise-name').value = '';
     document.getElementById('custom-exercise-duration').value = '';
     document.getElementById('custom-exercise-cal').value = '';
+    document.getElementById('cal-estimate-hint').innerHTML = '';
 
     // 自动勾选运动打卡
     const exerciseCheckItem = document.querySelector('.check-item:nth-child(3)');
     if (exerciseCheckItem && !exerciseCheckItem.classList.contains('checked')) {
         exerciseCheckItem.classList.add('checked');
         updateCheckinProgress();
+    }
+}
+
+// 运动热量自动估算（MET值法：MET × 体重kg × 小时）
+function estimateCalories(name, minutes) {
+    const weight = getLatestWeight();
+    const hours = minutes / 60;
+
+    // MET 值参考表（常见运动）
+    const metTable = {
+        '跑步': 8.0, '慢跑': 7.0, '快跑': 11.0,
+        '跳绳': 10.0, '快走': 5.0, '散步': 3.5,
+        '骑车': 6.0, '骑行': 6.0, '游泳': 8.0,
+        '瑜伽': 3.5, '普拉提': 3.0,
+        'hiit': 12.0, 'tabata': 12.0, '高强度间歇': 12.0,
+        '跳操': 7.0, '健身操': 7.0, '有氧操': 6.5,
+        '力量训练': 5.0, '举重': 5.0, '深蹲': 5.0,
+        '��楼梯': 8.0, '爬山': 7.0,
+        '篮球': 7.0, '羽毛球': 5.5, '乒乓球': 4.5,
+        '足球': 8.0, '网球': 7.0,
+        '跳舞': 5.0, '广场舞': 4.0,
+        '拉伸': 2.5, '平板支撑': 4.0, '仰卧起坐': 4.0,
+        '俯卧撑': 5.0, '引体向上': 5.0,
+        '拳击': 9.0, '搏击': 9.0,
+        '椭圆机': 6.0, '划船机': 7.0,
+    };
+
+    let met = 6.0; // 默认中等强度
+    const lower = name.toLowerCase();
+
+    for (const [key, value] of Object.entries(metTable)) {
+        if (lower.includes(key)) {
+            met = value;
+            break;
+        }
+    }
+
+    return Math.round(met * weight * hours);
+}
+
+// 实时自动估算并显示
+function autoEstimateCal() {
+    const name = document.getElementById('custom-exercise-name').value.trim();
+    const duration = parseInt(document.getElementById('custom-exercise-duration').value);
+    const calInput = document.getElementById('custom-exercise-cal');
+    const hint = document.getElementById('cal-estimate-hint');
+
+    if (name && duration && duration > 0) {
+        const estimated = estimateCalories(name, duration);
+        calInput.value = estimated;
+        hint.innerHTML = `🔥 根据你的体重（${getLatestWeight()}kg）自动估算：约 <strong>${estimated} kcal</strong>`;
+    } else {
+        calInput.value = '';
+        hint.innerHTML = '';
     }
 }
 
