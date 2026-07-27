@@ -130,6 +130,7 @@ function initNavigation() {
             if (page === 'weight') updateWeightPage();
             if (page === 'diet') updateDietPage();
             if (page === 'exercise') updateExercisePage();
+            if (page === 'plan') renderDailySummary();
         });
     });
 }
@@ -893,6 +894,144 @@ function importData() {
         reader.readAsText(file);
     };
     input.click();
+}
+
+// ===== 每日计划总结 =====
+function renderDailySummary() {
+    const summary = document.getElementById('daily-summary');
+    const analysis = document.getElementById('calorie-analysis');
+    if (!summary || !analysis) return;
+
+    // 计算今日摄入
+    let intake = 0;
+    const mealsDone = [];
+    if (appData.todayMeals.breakfast) { intake += appData.todayMeals.breakfast.cal; mealsDone.push('早餐'); }
+    if (appData.todayMeals.lunch) { intake += appData.todayMeals.lunch.cal; mealsDone.push('午餐'); }
+    if (appData.todayMeals.dinner) { intake += appData.todayMeals.dinner.cal; mealsDone.push('晚餐'); }
+
+    // 计算今日消耗
+    let burn = 0;
+    const exerciseDone = [];
+    appData.todayExercises.forEach(ex => { burn += ex.calories; exerciseDone.push(ex.name); });
+
+    // 计算基础代谢 (Mifflin-St Jeor)
+    const weight = getLatestWeight();
+    const height = appData.user.height;
+    const bmr = Math.round(10 * weight + 6.25 * height - 5 * 25 - 161); // 估算女性25岁
+    const tdee = Math.round(bmr * 1.2); // 久坐
+    const dailyTarget = Math.round(tdee - 500); // 每天赤字500kcal
+
+    // 判断状态
+    const weightRecorded = appData.weightRecords.length > 0 &&
+        appData.weightRecords[appData.weightRecords.length - 1].date === new Date().toISOString().split('T')[0];
+
+    let statusEmoji, statusText, statusClass;
+    const completeness = weightRecorded ? 1 : 0 + mealsDone.length + exerciseDone.length;
+    const totalTasks = 5; // 体重 + 3餐 + 运动
+
+    if (mealsDone.length >= 3 && exerciseDone.length >= 1 && weightRecorded) {
+        statusEmoji = '🌟'; statusText = '完美！今日计划全部完成'; statusClass = 'perfect';
+    } else if (mealsDone.length >= 2 && (exerciseDone.length >= 1 || weightRecorded)) {
+        statusEmoji = '👍'; statusText = '不错，再接再厉'; statusClass = 'good';
+    } else if (mealsDone.length >= 1) {
+        statusEmoji = '💪'; statusText = '还需努力，加油'; statusClass = 'ok';
+    } else {
+        statusEmoji = '🚀'; statusText = '今日计划尚未开始'; statusClass = 'pending';
+    }
+
+    // 热量判断
+    let calStatus, calEmoji, calClass;
+    if (intake === 0) {
+        calStatus = '还没记录饮食'; calEmoji = '⏳'; calClass = 'pending';
+    } else if (intake <= dailyTarget) {
+        calStatus = `热量控制优秀！低于目标 ${dailyTarget - intake} kcal`; calEmoji = '🎉'; calClass = 'perfect';
+    } else if (intake <= dailyTarget + 200) {
+        calStatus = `热量略超，超出 ${intake - dailyTarget} kcal`; calEmoji = '⚠️'; calClass = 'ok';
+    } else {
+        calStatus = `热量超标！超出 ${intake - dailyTarget} kcal`; calEmoji = '🔴'; calClass = 'bad';
+    }
+
+    summary.innerHTML = `
+        <div class="summary-status ${statusClass}">
+            <span class="summary-emoji">${statusEmoji}</span>
+            <span class="summary-text">${statusText}</span>
+        </div>
+        <div class="summary-grid">
+            <div class="summary-item ${weightRecorded ? 'done' : ''}">
+                <span class="summary-icon">⚖️</span>
+                <span class="summary-label">体重记录</span>
+                <span class="summary-check">${weightRecorded ? '✅' : '⬜'}</span>
+            </div>
+            <div class="summary-item ${mealsDone.includes('早餐') ? 'done' : ''}">
+                <span class="summary-icon">🍳</span>
+                <span class="summary-label">早餐</span>
+                <span class="summary-check">${mealsDone.includes('早餐') ? '✅' : '⬜'}</span>
+            </div>
+            <div class="summary-item ${mealsDone.includes('午餐') ? 'done' : ''}">
+                <span class="summary-icon">🍱</span>
+                <span class="summary-label">午餐</span>
+                <span class="summary-check">${mealsDone.includes('午餐') ? '✅' : '⬜'}</span>
+            </div>
+            <div class="summary-item ${mealsDone.includes('晚餐') ? 'done' : ''}">
+                <span class="summary-icon">🍲</span>
+                <span class="summary-label">晚餐</span>
+                <span class="summary-check">${mealsDone.includes('晚餐') ? '✅' : '⬜'}</span>
+            </div>
+            <div class="summary-item ${exerciseDone.length > 0 ? 'done' : ''}">
+                <span class="summary-icon">🏃</span>
+                <span class="summary-label">运动</span>
+                <span class="summary-check">${exerciseDone.length > 0 ? '✅' : '⬜'}</span>
+            </div>
+        </div>
+    `;
+
+    analysis.innerHTML = `
+        <div class="cal-analysis-status ${calClass}">
+            <span>${calEmoji}</span>
+            <span>${calStatus}</span>
+        </div>
+        <div class="cal-bars">
+            <div class="cal-bar-row">
+                <span class="cal-bar-label">🍽️ 已摄入</span>
+                <div class="cal-bar-track">
+                    <div class="cal-bar-fill intake-fill" style="width:${Math.min(100, (intake / dailyTarget) * 100)}%"></div>
+                </div>
+                <span class="cal-bar-value">${intake}</span>
+            </div>
+            <div class="cal-bar-row">
+                <span class="cal-bar-label">🎯 目标摄入</span>
+                <div class="cal-bar-track">
+                    <div class="cal-bar-fill target-fill" style="width:100%"></div>
+                </div>
+                <span class="cal-bar-value">${dailyTarget}</span>
+            </div>
+            <div class="cal-bar-row">
+                <span class="cal-bar-label">🔥 已消耗</span>
+                <div class="cal-bar-track">
+                    <div class="cal-bar-fill burn-fill" style="width:${Math.min(100, (burn / 500) * 100)}%"></div>
+                </div>
+                <span class="cal-bar-value">${burn}</span>
+            </div>
+        </div>
+        <div class="cal-detail">
+            <div class="cal-detail-row">
+                <span>基础代谢 (BMR)</span>
+                <span><strong>${bmr}</strong> kcal</span>
+            </div>
+            <div class="cal-detail-row">
+                <span>每日消耗 (TDEE)</span>
+                <span><strong>${tdee}</strong> kcal</span>
+            </div>
+            <div class="cal-detail-row">
+                <span>减脂目标 (赤字500)</span>
+                <span><strong>${dailyTarget}</strong> kcal</span>
+            </div>
+            <div class="cal-detail-row">
+                <span>净热量差</span>
+                <span><strong style="color:${intake - burn <= dailyTarget ? 'var(--success-color)' : '#E74C3C'}">${intake - burn}</strong> kcal</span>
+            </div>
+        </div>
+    `;
 }
 
 // ===== 30天计划日历 =====

@@ -1027,6 +1027,156 @@ body {
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
+/* ===== 每日计划总结 ===== */
+.daily-summary {
+    padding: 5px 0;
+}
+
+.summary-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.summary-status.perfect { background: #D4EDDA; color: #155724; }
+.summary-status.good { background: #D4E6FF; color: #004085; }
+.summary-status.ok { background: #FFF3CD; color: #856404; }
+.summary-status.pending { background: var(--bg-color); color: var(--text-secondary); }
+
+.summary-emoji { font-size: 28px; }
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.summary-item {
+    text-align: center;
+    padding: 12px 6px;
+    background: var(--bg-color);
+    border-radius: 12px;
+    opacity: 0.5;
+    transition: all 0.3s;
+}
+
+.summary-item.done {
+    opacity: 1;
+    background: #E8F5E9;
+}
+
+.summary-icon {
+    display: block;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.summary-label {
+    display: block;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.summary-check {
+    font-size: 14px;
+}
+
+/* ===== 热量分析 ===== */
+.calorie-analysis {
+    padding: 5px 0;
+}
+
+.cal-analysis-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.cal-analysis-status.perfect { background: #D4EDDA; color: #155724; }
+.cal-analysis-status.ok { background: #FFF3CD; color: #856404; }
+.cal-analysis-status.bad { background: #F8D7DA; color: #721C24; }
+.cal-analysis-status.pending { background: var(--bg-color); color: var(--text-secondary); }
+
+.cal-bars { margin-bottom: 16px; }
+
+.cal-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.cal-bar-label {
+    width: 80px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex-shrink: 0;
+}
+
+.cal-bar-track {
+    flex: 1;
+    height: 12px;
+    background: var(--bg-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.cal-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.8s ease;
+}
+
+.intake-fill { background: linear-gradient(90deg, #FF6B9D, #FF8FB0); }
+.target-fill { background: linear-gradient(90deg, var(--success-color), #A8E6CF); }
+.burn-fill { background: linear-gradient(90deg, #FF9A56, #FFD166); }
+
+.cal-bar-value {
+    width: 50px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.cal-detail {
+    background: var(--bg-color);
+    border-radius: 14px;
+    padding: 14px;
+}
+
+.cal-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.cal-detail-row:last-child {
+    border-bottom: none;
+}
+
+.cal-detail-row strong {
+    color: var(--text-primary);
+}
+
 /* ===== 30天计划日历 ===== */
 .plan-calendar {
     display: grid;
