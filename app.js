@@ -209,6 +209,31 @@ function getLatestWeight() {
     return appData.weightRecords[appData.weightRecords.length - 1].weight;
 }
 
+// 点击修改当前体重
+function editCurrentWeight() {
+    const current = getLatestWeight();
+    const input = prompt('修改当前体重（kg）：', current);
+    if (input === null) return;
+    const weight = parseFloat(input);
+    if (!weight || weight <= 0) {
+        alert('请输入有效的体重数值');
+        return;
+    }
+    
+    const today = new Date().toISOString().split('T')[0];
+    const existingIndex = appData.weightRecords.findIndex(r => r.date === today);
+    if (existingIndex >= 0) {
+        appData.weightRecords[existingIndex].weight = weight;
+    } else {
+        appData.weightRecords.push({ date: today, weight });
+    }
+    
+    saveData();
+    updateHomePage();
+    updateWeightPage();
+    showToast('体重已更新');
+}
+
 function updateCalorieOverview() {
     let intake = 0;
     if (appData.todayMeals.breakfast) intake += appData.todayMeals.breakfast.cal;
