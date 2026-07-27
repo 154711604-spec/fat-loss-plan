@@ -5,7 +5,8 @@ let appData = {
         height: 165,
         weight: 60,
         targetLoss: 5,
-        theme: 'cute'
+        theme: 'cute',
+        avatar: '' // 自定义头像 base64，为空则用 dicebear
     },
     weightRecords: [],
     todayMeals: {
@@ -806,10 +807,63 @@ function updateSettingsPage() {
     document.getElementById('setting-height').value = appData.user.height;
     document.getElementById('setting-target').value = appData.user.targetLoss;
 
+    // 更新头像预览
+    updateSettingsAvatar();
+
     // 更新主题选择状态
     document.querySelectorAll('.settings-theme .theme-option').forEach(o => {
         o.classList.toggle('active', o.dataset.theme === appData.user.theme);
     });
+}
+
+// 更新设置页头像
+function updateSettingsAvatar() {
+    const img = document.getElementById('settings-avatar-img');
+    if (img) {
+        img.src = getUserAvatar();
+    }
+}
+
+// 获取当前头像URL
+function getUserAvatar() {
+    if (appData.user.avatar) return appData.user.avatar;
+    const seed = appData.user._avatarSeed || appData.user.name.replace(/[^a-zA-Z0-9]/g, '') || 'fitness';
+    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+}
+
+// 上传自定义头像
+function handleAvatarUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        appData.user.avatar = e.target.result;
+        saveData();
+        updateSettingsAvatar();
+        updateHeaderAvatar();
+        showToast('头像已更新');
+    };
+    reader.readAsDataURL(file);
+}
+
+// 随机生成头像
+function refreshAvatar() {
+    const seeds = ['fitness', 'happy', 'cool', 'smile', 'cute', 'sporty', 'sunny', 'luna', 'mia', 'aria', 'nova', 'ruby', 'jade'];
+    const seed = seeds[Math.floor(Math.random() * seeds.length)];
+    appData.user.avatar = ''; // 清空自定义头像
+    appData.user._avatarSeed = seed;
+    saveData();
+    updateSettingsAvatar();
+    updateHeaderAvatar();
+    showToast('随机头像已生成');
+}
+
+// 更新顶部头像
+function updateHeaderAvatar() {
+    const headerImg = document.getElementById('header-avatar');
+    if (headerImg) {
+        headerImg.src = getUserAvatar();
+    }
 }
 
 function saveSettings() {
