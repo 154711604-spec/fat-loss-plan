@@ -436,9 +436,15 @@ function handleMealText(mealType) {
     const nameInput = document.getElementById(`${mealType}-text`);
     const calInput = document.getElementById(`${mealType}-cal`);
     const name = nameInput.value.trim();
-    const cal = parseInt(calInput.value);
+    let cal = parseInt(calInput.value);
 
-    if (!name && !cal) return; // 两个都空就不保存
+    // 如果输入了食物名但没有填热量，自动估算
+    if (name && (!cal || isNaN(cal))) {
+        cal = estimateFoodCal(name);
+        calInput.value = cal;
+    }
+
+    if (!name && !cal) return;
 
     appData.todayMeals[mealType] = {
         name: name || `未命名${mealType === 'breakfast' ? '早餐' : mealType === 'lunch' ? '午餐' : '晚餐'}`,
@@ -453,6 +459,104 @@ function handleMealText(mealType) {
         dietCheckItem.classList.add('checked');
         updateCheckinProgress();
     }
+}
+
+// 根据食物名称估算热量
+function estimateFoodCal(name) {
+    const lower = name.toLowerCase();
+
+    // 常见食物热量表（每份约热量 kcal）
+    const foodCalTable = [
+        // 主食类
+        { keys: ['米饭', '白米饭', '大米饭'], cal: 200, note: '一碗(150g)' },
+        { keys: ['糙米饭', '杂粮饭'], cal: 180, note: '一碗(150g)' },
+        { keys: ['馒头', '白馒头'], cal: 220, note: '一个' },
+        { keys: ['面条', '汤面', '清汤面'], cal: 250, note: '一碗' },
+        { keys: ['全麦面包', '全麦吐司'], cal: 150, note: '两片' },
+        { keys: ['面包'], cal: 250, note: '一个' },
+        { keys: ['包子'], cal: 150, note: '一个' },
+        { keys: ['饺子', '水饺'], cal: 40, note: '一个' },
+        { keys: ['馄饨', '云吞'], cal: 250, note: '一碗(10个)' },
+        { keys: ['燕麦', '燕麦粥', '麦片'], cal: 180, note: '一碗' },
+        { keys: ['粥', '白粥', '小米粥'], cal: 120, note: '一碗' },
+        { keys: ['红薯', '地瓜'], cal: 150, note: '一个(200g)' },
+        { keys: ['玉米'], cal: 140, note: '一根' },
+        { keys: ['饼', '煎饼', '大饼'], cal: 300, note: '一张' },
+        { keys: ['油条'], cal: 250, note: '一根' },
+
+        // 蛋白质类
+        { keys: ['鸡蛋', '水煮蛋', '煮鸡蛋'], cal: 75, note: '一个' },
+        { keys: ['煎蛋', '炒蛋', '煎鸡蛋'], cal: 120, note: '一个' },
+        { keys: ['鸡胸肉'], cal: 150, note: '100g' },
+        { keys: ['鸡腿'], cal: 180, note: '一个' },
+        { keys: ['鸡肉'], cal: 200, note: '100g' },
+        { keys: ['牛肉'], cal: 250, note: '100g' },
+        { keys: ['猪肉'], cal: 300, note: '100g' },
+        { keys: ['鱼', '清蒸鱼', '蒸鱼'], cal: 120, note: '100g' },
+        { keys: ['虾', '水煮虾', '虾仁'], cal: 100, note: '100g' },
+        { keys: ['豆腐'], cal: 80, note: '100g' },
+        { keys: ['豆浆'], cal: 60, note: '一杯(250ml)' },
+        { keys: ['牛奶', '低脂牛奶', '纯牛奶'], cal: 120, note: '一杯(250ml)' },
+        { keys: ['酸奶'], cal: 150, note: '一杯(200ml)' },
+
+        // 蔬菜类
+        { keys: ['沙拉', '蔬菜沙拉', '轻食沙拉'], cal: 150, note: '一份' },
+        { keys: ['青菜', '炒青菜', '蔬菜'], cal: 80, note: '一份' },
+        { keys: ['西兰花', '花椰菜'], cal: 50, note: '100g' },
+        { keys: ['番茄', '西红柿'], cal: 30, note: '一个' },
+        { keys: ['黄瓜'], cal: 20, note: '一根' },
+        { keys: ['菌菇', '蘑菇', '菌菇汤'], cal: 60, note: '一碗' },
+
+        // 外卖/快餐
+        { keys: ['黄焖鸡', '黄焖鸡米饭'], cal: 550, note: '一份' },
+        { keys: ['麻辣烫'], cal: 500, note: '一碗' },
+        { keys: ['沙县小吃', '拌面', '扁肉'], cal: 450, note: '一份' },
+        { keys: ['汉堡'], cal: 500, note: '一个' },
+        { keys: ['炸鸡'], cal: 400, note: '一块' },
+        { keys: ['披萨'], cal: 300, note: '一片' },
+        { keys: ['螺蛳粉'], cal: 600, note: '一碗' },
+        { keys: ['酸辣粉'], cal: 500, note: '一碗' },
+        { keys: ['米线', '过桥米线'], cal: 500, note: '一碗' },
+        { keys: ['麻辣香锅'], cal: 600, note: '一份' },
+        { keys: ['盖浇饭', '盖饭'], cal: 600, note: '一份' },
+        { keys: ['炒饭', '蛋炒饭'], cal: 500, note: '一份' },
+        { keys: ['炒面', '炒粉'], cal: 500, note: '一份' },
+        { keys: ['寿司'], cal: 40, note: '一个' },
+
+        // 水果
+        { keys: ['苹果'], cal: 80, note: '一个' },
+        { keys: ['香蕉'], cal: 100, note: '一根' },
+        { keys: ['橙子', '橘子'], cal: 60, note: '一个' },
+        { keys: ['葡萄'], cal: 100, note: '一串(200g)' },
+        { keys: ['西瓜'], cal: 80, note: '一片(300g)' },
+
+        // 饮品
+        { keys: ['黑咖啡', '美式'], cal: 5, note: '一杯' },
+        { keys: ['拿铁', '咖啡'], cal: 150, note: '一杯' },
+        { keys: ['奶茶'], cal: 350, note: '一杯' },
+        { keys: ['可乐', '汽水'], cal: 150, note: '一罐' },
+        { keys: ['果汁'], cal: 120, note: '一杯' },
+    ];
+
+    let totalCal = 0;
+    let matchCount = 0;
+
+    for (const item of foodCalTable) {
+        for (const key of item.keys) {
+            if (lower.includes(key.toLowerCase())) {
+                totalCal += item.cal;
+                matchCount++;
+                break;
+            }
+        }
+    }
+
+    // 如果识别到多种食物，累加；如果完全没识别到，给一个保守估算
+    if (matchCount === 0) {
+        return Math.round(name.length * 20 + 100); // 粗略估算
+    }
+
+    return Math.round(totalCal);
 }
 
 function updateDietPage() {
