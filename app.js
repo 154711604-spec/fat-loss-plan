@@ -505,13 +505,26 @@ function handleMealText(mealType) {
     const name = nameInput.value.trim();
     let cal = parseInt(calInput.value);
 
-    // 如果输入了食物名但没有填热量，自动估算
+    // 如果输入了食物名但没有填热量，实时显示估算值
+    if (name) {
+        const estimated = estimateFoodCal(name);
+        if (!cal || isNaN(cal)) {
+            calInput.value = estimated;
+            calInput.style.color = 'var(--success-color)';
+        } else {
+            calInput.style.color = '';
+        }
+    } else {
+        calInput.value = '';
+        calInput.style.color = '';
+    }
+
+    if (!name && !cal) return;
+
     if (name && (!cal || isNaN(cal))) {
         cal = estimateFoodCal(name);
         calInput.value = cal;
     }
-
-    if (!name && !cal) return;
 
     appData.todayMeals[mealType] = {
         name: name || `未命名${mealType === 'breakfast' ? '早餐' : mealType === 'lunch' ? '午餐' : '晚餐'}`,
