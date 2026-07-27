@@ -22,19 +22,37 @@ let appData = {
     currentDate: new Date()
 };
 
-// 从localStorage加载数据
+// 从localStorage加载数据（优先主key，fallback到备份key）
 function loadData() {
-    const saved = localStorage.getItem('fatLossData');
+    let saved = localStorage.getItem('fatLossData');
+    if (!saved) {
+        saved = localStorage.getItem('fatLossData_bak');
+    }
     if (saved) {
-        appData = JSON.parse(saved);
-        // 恢复日期对象
-        appData.currentDate = new Date(appData.currentDate);
+        try {
+            appData = JSON.parse(saved);
+            // 恢复日期对象
+            appData.currentDate = new Date(appData.currentDate);
+        } catch(e) {
+            console.error('数据解析失败，使用默认数据');
+        }
     }
 }
 
-// 保存数据到localStorage
+// 保存数据到localStorage（双key冗余备份 + 同步写入）
 function saveData() {
-    localStorage.setItem('fatLossData', JSON.stringify(appData));
+    const jsonStr = JSON.stringify(appData);
+    try {
+        localStorage.setItem('fatLossData', jsonStr);
+        localStorage.setItem('fatLossData_bak', jsonStr);
+    } catch(e) {
+        console.error('保存数据失败:', e);
+    }
+}
+
+// 每次重要操作后强制保存
+function forceSave() {
+    saveData();
 }
 
 // ===== 初始化 =====
@@ -584,13 +602,14 @@ function checkDailyReset() {
     const today = new Date().toISOString().split('T')[0];
     const lastVisit = localStorage.getItem('lastVisit');
 
-    if (lastVisit !== today) {
+    if (lastVisit && lastVisit !== today) {
         // 新的一天，重置今日数据
         appData.todayMeals = { breakfast: null, lunch: null, dinner: null };
         appData.todayExercises = [];
-        localStorage.setItem('lastVisit', today);
-        saveData();
     }
+    // 无论如何更新最后访问日期
+    localStorage.setItem('lastVisit', today);
+    saveData();
 }
 
 // 页面加载时检查是否需要重置
