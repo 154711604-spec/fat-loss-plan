@@ -273,32 +273,8 @@
                                 <span class="card-icon">🍳</span>
                                 <h3>早餐推荐</h3>
                             </div>
-                            <div class="meal-recommendation">
-                                <div class="meal-item">
-                                    <span class="meal-emoji">🥪</span>
-                                    <div class="meal-info">
-                                        <span class="meal-name">全麦三明治+黑咖啡</span>
-                                        <span class="meal-cal">约350kcal</span>
-                                    </div>
-                                    <button class="btn-select" onclick="selectMeal('breakfast', '全麦三明治+黑咖啡', 350)">选这个</button>
-                                </div>
-                                <div class="meal-item">
-                                    <span class="meal-emoji">🥣</span>
-                                    <div class="meal-info">
-                                        <span class="meal-name">燕麦粥+水煮蛋</span>
-                                        <span class="meal-cal">约280kcal</span>
-                                    </div>
-                                    <button class="btn-select" onclick="selectMeal('breakfast', '燕麦粥+水煮蛋', 280)">选这个</button>
-                                </div>
-                                <div class="meal-item">
-                                    <span class="meal-emoji">🥛</span>
-                                    <div class="meal-info">
-                                        <span class="meal-name">低脂牛奶+全麦面包</span>
-                                        <span class="meal-cal">约320kcal</span>
-                                    </div>
-                                    <button class="btn-select" onclick="selectMeal('breakfast', '低脂牛奶+全麦面包', 320)">选这个</button>
-                                </div>
-                            </div>
+                            <div class="meal-recommendation" id="breakfast-recommend"></div>
+                            <button class="btn-refresh" onclick="refreshMeals('breakfast')">🔄 换一批</button>
                             <div class="meal-photo-section">
                                 <p>记录实际吃了什么</p>
                                 <div class="meal-text-input">
@@ -320,32 +296,8 @@
                                 <span class="card-icon">🍱</span>
                                 <h3>午餐推荐（外卖版）</h3>
                             </div>
-                            <div class="meal-recommendation">
-                                <div class="meal-item">
-                                    <span class="meal-emoji">🥗</span>
-                                    <div class="meal-info">
-                                        <span class="meal-name">轻食沙拉+鸡胸肉</span>
-                                        <span class="meal-cal">约450kcal</span>
-                                    </div>
-                                    <button class="btn-select" onclick="selectMeal('lunch', '轻食沙拉+鸡胸肉', 450)">选这个</button>
-                                </div>
-                                <div class="meal-item">
-                                    <span class="meal-emoji">🍜</span>
-                                    <div class="meal-info">
-                                        <span class="meal-name">清汤荞麦面+蔬菜</span>
-                                        <span class="meal-cal">约400kcal</span>
-                                    </div>
-                                    <button class="btn-select" onclick="selectMeal('lunch', '清汤荞麦面+蔬菜', 400)">选这个</button>
-                                </div>
-                                <div class="meal-item">
-                                    <span class="meal-emoji">🍚</span>
-                                    <div class="meal-info">
-                                        <span class="meal-name">糙米饭+清蒸鱼+青菜</span>
-                                        <span class="meal-cal">约500kcal</span>
-                                    </div>
-                                    <button class="btn-select" onclick="selectMeal('lunch', '糙米饭+清蒸鱼+青菜', 500)">选这个</button>
-                                </div>
-                            </div>
+                            <div class="meal-recommendation" id="lunch-recommend"></div>
+                            <button class="btn-refresh" onclick="refreshMeals('lunch')">🔄 换一批</button>
                             <div class="meal-photo-section">
                                 <p>记录实际吃了什么</p>
                                 <div class="meal-text-input">
@@ -367,32 +319,8 @@
                                 <span class="card-icon">🍲</span>
                                 <h3>晚餐推荐（外卖版）</h3>
                             </div>
-                            <div class="meal-recommendation">
-                                <div class="meal-item">
-                                    <span class="meal-emoji">🥒</span>
-                                    <div class="meal-info">
-                                        <span class="meal-name">蔬菜汤+水煮虾</span>
-                                        <span class="meal-cal">约300kcal</span>
-                                    </div>
-                                    <button class="btn-select" onclick="selectMeal('dinner', '蔬菜汤+水煮虾', 300)">选这个</button>
-                                </div>
-                                <div class="meal-item">
-                                    <span class="meal-emoji">🥗</span>
-                                    <div class="meal-info">
-                                        <span class="meal-name">水果沙拉+酸奶</span>
-                                        <span class="meal-cal">约250kcal</span>
-                                    </div>
-                                    <button class="btn-select" onclick="selectMeal('dinner', '水果沙拉+酸奶', 250)">选这个</button>
-                                </div>
-                                <div class="meal-item">
-                                    <span class="meal-emoji">🍄</span>
-                                    <div class="meal-info">
-                                        <span class="meal-name">菌菇豆腐汤+小份米饭</span>
-                                        <span class="meal-cal">约350kcal</span>
-                                    </div>
-                                    <button class="btn-select" onclick="selectMeal('dinner', '菌菇豆腐汤+小份米饭', 350)">选这个</button>
-                                </div>
-                            </div>
+                            <div class="meal-recommendation" id="dinner-recommend"></div>
+                            <button class="btn-refresh" onclick="refreshMeals('dinner')">🔄 换一批</button>
                             <div class="meal-photo-section">
                                 <p>记录实际吃了什么</p>
                                 <div class="meal-text-input">

@@ -390,6 +390,73 @@ function updateWeightChart() {
 }
 
 // ===== 饮食管理 =====
+// 外卖菜单池
+const mealPool = {
+    breakfast: [
+        { emoji: '🥪', name: '全麦三明治+黑咖啡', cal: 350 },
+        { emoji: '🥣', name: '燕麦粥+水煮蛋', cal: 280 },
+        { emoji: '🥛', name: '低脂牛奶+全麦面包', cal: 320 },
+        { emoji: '🍳', name: '水煮蛋+蒸红薯+豆浆', cal: 260 },
+        { emoji: '🌽', name: '玉米+水煮蛋+牛奶', cal: 290 },
+        { emoji: '🥯', name: '全麦贝果+酸奶+水果', cal: 340 },
+        { emoji: '🥟', name: '素馅蒸饺+黑咖啡', cal: 300 },
+        { emoji: '🍞', name: '吐司煎蛋+小番茄+牛奶', cal: 380 },
+        { emoji: '🥒', name: '蔬菜鸡肉卷+柠檬水', cal: 310 },
+        { emoji: '🍌', name: '香蕉燕麦奶昔+坚果', cal: 330 },
+    ],
+    lunch: [
+        { emoji: '🥗', name: '轻食沙拉+鸡胸肉', cal: 450 },
+        { emoji: '🍜', name: '清汤荞麦面+蔬菜', cal: 400 },
+        { emoji: '🍚', name: '糙米饭+清蒸鱼+青菜', cal: 500 },
+        { emoji: '🥩', name: '牛肉沙拉碗+藜麦', cal: 480 },
+        { emoji: '🍱', name: '日式便当(烤三文鱼+蔬菜)', cal: 520 },
+        { emoji: '🌯', name: '鸡肉全麦卷饼+沙拉', cal: 460 },
+        { emoji: '🍲', name: '番茄牛肉汤+小份米饭', cal: 430 },
+        { emoji: '🥘', name: '韩式拌饭(少酱)+泡菜', cal: 490 },
+        { emoji: '🍝', name: '番茄意面+蔬菜沙拉', cal: 440 },
+        { emoji: '🫕', name: '虾仁豆腐煲+杂粮饭', cal: 420 },
+    ],
+    dinner: [
+        { emoji: '🥒', name: '蔬菜汤+水煮虾', cal: 300 },
+        { emoji: '🥗', name: '水果沙拉+酸奶', cal: 250 },
+        { emoji: '🍄', name: '菌菇豆腐汤+小份米饭', cal: 350 },
+        { emoji: '🐟', name: '清蒸鲈鱼+白灼西兰花', cal: 280 },
+        { emoji: '🥬', name: '上汤娃娃菜+凉拌鸡丝', cal: 320 },
+        { emoji: '🍲', name: '番茄蛋花汤+蒸南瓜', cal: 260 },
+        { emoji: '🦐', name: '白灼虾+凉拌黄瓜+玉米', cal: 310 },
+        { emoji: '🥦', name: '蒜蓉西兰花+水煮鸡胸', cal: 290 },
+        { emoji: '🍠', name: '蒸红薯+凉拌木耳+鸡蛋', cal: 270 },
+        { emoji: '🥣', name: '紫菜蛋花汤+小份荞麦面', cal: 330 },
+    ]
+};
+
+// 渲染外卖推荐
+function renderMealRecommendation(mealType) {
+    const container = document.getElementById(`${mealType}-recommend`);
+    if (!container) return;
+
+    const pool = mealPool[mealType];
+    // 随机选4个
+    const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, 4);
+
+    container.innerHTML = shuffled.map(item => `
+        <div class="meal-item">
+            <span class="meal-emoji">${item.emoji}</span>
+            <div class="meal-info">
+                <span class="meal-name">${item.name}</span>
+                <span class="meal-cal">约${item.cal}kcal</span>
+            </div>
+            <button class="btn-select" onclick="selectMeal('${mealType}', '${item.name.replace(/'/g, "\\'")}', ${item.cal})">选这个</button>
+        </div>
+    `).join('');
+}
+
+// 换一批
+function refreshMeals(mealType) {
+    renderMealRecommendation(mealType);
+    updateDietPage();
+}
+
 function selectMeal(mealType, name, calories) {
     appData.todayMeals[mealType] = { name, cal: calories };
     saveData();
@@ -560,24 +627,32 @@ function estimateFoodCal(name) {
 }
 
 function updateDietPage() {
-    // 更新已选状态
-    document.querySelectorAll('.meal-item').forEach(item => {
-        const btn = item.querySelector('.btn-select');
-        const mealName = item.querySelector('.meal-name').textContent;
+    // 渲染每顿饭的推荐
+    renderMealRecommendation('breakfast');
+    renderMealRecommendation('lunch');
+    renderMealRecommendation('dinner');
 
-        let isSelected = false;
-        Object.values(appData.todayMeals).forEach(meal => {
-            if (meal && meal.name === mealName) isSelected = true;
+    // 更新已选状态（延迟等 DOM 渲染完）
+    setTimeout(() => {
+        document.querySelectorAll('.meal-item').forEach(item => {
+            const btn = item.querySelector('.btn-select');
+            if (!btn) return;
+            const mealName = item.querySelector('.meal-name').textContent;
+
+            let isSelected = false;
+            Object.values(appData.todayMeals).forEach(meal => {
+                if (meal && meal.name === mealName) isSelected = true;
+            });
+
+            if (isSelected) {
+                btn.textContent = '已选';
+                btn.style.background = 'var(--success-color)';
+            } else {
+                btn.textContent = '选这个';
+                btn.style.background = '';
+            }
         });
-
-        if (isSelected) {
-            btn.textContent = '已选';
-            btn.style.background = 'var(--success-color)';
-        } else {
-            btn.textContent = '选这个';
-            btn.style.background = '';
-        }
-    });
+    }, 50);
 }
 
 // ===== 运动打卡 =====
