@@ -38,6 +38,16 @@ function loadData() {
             console.error('数据解析失败，使用默认数据');
         }
     }
+    // 如果完全没有本地数据，尝试加载内置备份
+    if (!saved && typeof USER_BACKUP !== 'undefined') {
+        try {
+            appData = USER_BACKUP;
+            appData.currentDate = new Date(appData.currentDate);
+            saveData(); // 立即写入localStorage
+        } catch(e) {
+            console.error('备份恢复失败:', e);
+        }
+    }
 }
 
 // 保存数据到localStorage（双key冗余备份 + 同步写入）
