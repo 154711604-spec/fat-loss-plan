@@ -1,0 +1,995 @@
+/* ===== 基础变量 ===== */
+:root {
+    /* 可爱卡通主题（默认） */
+    --primary-color: #FF6B9D;
+    --primary-light: #FFB8D0;
+    --primary-dark: #E84A7F;
+    --bg-color: #FFF0F5;
+    --bg-secondary: #FFFFFF;
+    --text-primary: #5A3D5C;
+    --text-secondary: #9B7B9B;
+    --border-color: #FFD6E7;
+    --card-shadow: 0 4px 15px rgba(255, 107, 157, 0.15);
+    --sidebar-bg: #FFFFFF;
+    --accent-color: #FF8FB0;
+    --success-color: #7ED7A7;
+    --warning-color: #FFD166;
+    --gradient-start: #FF6B9D;
+    --gradient-end: #FF8FB0;
+}
+
+/* 简约实用主题 */
+[data-theme="simple"] {
+    --primary-color: #4A90E2;
+    --primary-light: #A8D0F0;
+    --primary-dark: #2E6BB3;
+    --bg-color: #F5F7FA;
+    --bg-secondary: #FFFFFF;
+    --text-primary: #2C3E50;
+    --text-secondary: #7F8C8D;
+    --border-color: #E1E8ED;
+    --card-shadow: 0 2px 10px rgba(74, 144, 226, 0.1);
+    --sidebar-bg: #FFFFFF;
+    --accent-color: #5BA3F5;
+    --success-color: #27AE60;
+    --warning-color: #F39C12;
+    --gradient-start: #4A90E2;
+    --gradient-end: #5BA3F5;
+}
+
+/* 清新自然主题 */
+[data-theme="nature"] {
+    --primary-color: #52B788;
+    --primary-light: #A8E6CF;
+    --primary-dark: #2D6A4F;
+    --bg-color: #F0F7F4;
+    --bg-secondary: #FFFFFF;
+    --text-primary: #1B4332;
+    --text-secondary: #52796F;
+    --border-color: #B7E4C7;
+    --card-shadow: 0 4px 15px rgba(82, 183, 136, 0.15);
+    --sidebar-bg: #FFFFFF;
+    --accent-color: #74C69D;
+    --success-color: #40916C;
+    --warning-color: #D8F3DC;
+    --gradient-start: #52B788;
+    --gradient-end: #74C69D;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ===== 欢迎页 ===== */
+#welcome-page {
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.welcome-header {
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 40px;
+}
+
+.welcome-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 15px;
+    border: 4px solid var(--primary-light);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.welcome-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.welcome-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+.welcome-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+.welcome-form {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    font-size: 16px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: all 0.3s;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.theme-options {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.theme-option {
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 16px;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.theme-option.active {
+    border-color: var(--primary-color);
+    background: var(--primary-light);
+}
+
+.theme-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    margin: 0 auto 8px;
+}
+
+.cute-theme {
+    background: linear-gradient(135deg, #FF6B9D, #FFB8D0);
+}
+
+.simple-theme {
+    background: linear-gradient(135deg, #4A90E2, #A8D0F0);
+}
+
+.nature-theme {
+    background: linear-gradient(135deg, #52B788, #A8E6CF);
+}
+
+.theme-option span {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.btn-start {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.btn-start:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.btn-start:active {
+    transform: translateY(0);
+}
+
+/* ===== 主页面 ===== */
+#main-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+}
+
+.app-header {
+    padding: 10px 20px 15px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-light);
+    object-fit: cover;
+}
+
+.user-text h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 2px;
+}
+
+.user-text p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ===== 侧边栏 ===== */
+.sidebar {
+    width: 140px;
+    background: var(--sidebar-bg);
+    border-radius: 0 24px 24px 0;
+    padding: 15px 10px;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.nav-section {
+    margin-bottom: 20px;
+}
+
+.nav-label {
+    display: block;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    padding-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 13px;
+    color: var(--text-primary);
+    position: relative;
+    margin-bottom: 4px;
+}
+
+.nav-item:hover {
+    background: var(--primary-light);
+}
+
+.nav-item.active {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.nav-icon {
+    font-size: 18px;
+}
+
+.nav-badge {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-color);
+    color: white;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+/* ===== 内容区 ===== */
+.content {
+    flex: 1;
+    padding: 10px 15px 20px;
+    overflow-y: auto;
+    height: calc(100vh - 120px);
+}
+
+.content-page {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 15px;
+    box-shadow: var(--card-shadow);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.card-icon {
+    font-size: 20px;
+}
+
+.card-header h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ===== 目标进度 ===== */
+.goal-progress {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.progress-ring {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.progress-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.progress-bg {
+    fill: none;
+    stroke: var(--border-color);
+    stroke-width: 8;
+}
+
+.progress-fill {
+    fill: none;
+    stroke: url(#progressGradient);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    transition: stroke-dashoffset 1s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.progress-text span {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.progress-text small {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.goal-stats {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 10px;
+    background: var(--bg-color);
+    border-radius: 14px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* ===== 打卡清单 ===== */
+.checklist {
+    margin-bottom: 15px;
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.check-item:last-child {
+    border-bottom: none;
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.check-item.checked .checkbox {
+    background: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.check-item.checked .checkbox::after {
+    content: '✓';
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.check-icon {
+    font-size: 20px;
+}
+
+.check-text {
+    flex: 1;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+
+.check-item.checked .check-text {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+.check-streak {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--bg-color);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 0%;
+}
+
+.progress-text-bottom {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* ===== 热量概览 ===== */
+.calorie-overview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.calorie-item {
+    text-align: center;
+    padding: 15px 10px;
+    background: var(--bg-color);
+    border-radius: 16px;
+}
+
+.calorie-icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.calorie-value {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.calorie-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* ===== 体重记录 ===== */
+.weight-input-section {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.weight-input-section input {
+    flex: 1;
+    padding: 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    font-size: 16px;
+    outline: none;
+}
+
+.weight-input-section input:focus {
+    border-color: var(--primary-color);
+}
+
+.unit {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.weight-input-section button {
+    padding: 14px 24px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.weight-compare {
+    text-align: center;
+    padding: 15px;
+    background: var(--bg-color);
+    border-radius: 14px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.weight-compare .compare-value {
+    font-size: 24px;
+    font-weight: 700;
+    display: block;
+    margin: 5px 0;
+}
+
+.weight-compare .compare-value.down {
+    color: var(--success-color);
+}
+
+.weight-compare .compare-value.up {
+    color: #E74C3C;
+}
+
+.chart-placeholder {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+}
+
+.chart-placeholder span {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.weight-history {
+    margin-top: 15px;
+}
+
+.weight-record {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-color);
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.weight-record .record-date {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.weight-record .record-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.weight-record .record-change {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.weight-record .record-change.down {
+    background: #D4EDDA;
+    color: #155724;
+}
+
+.weight-record .record-change.up {
+    background: #F8D7DA;
+    color: #721C24;
+}
+
+/* ===== 饮食管理 ===== */
+.meal-recommendation {
+    margin-bottom: 15px;
+}
+
+.meal-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-color);
+    border-radius: 14px;
+    margin-bottom: 10px;
+}
+
+.meal-emoji {
+    font-size: 32px;
+}
+
+.meal-info {
+    flex: 1;
+}
+
+.meal-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.meal-cal {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.btn-select {
+    padding: 8px 16px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-select:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+.meal-photo-section {
+    text-align: center;
+    padding: 15px;
+    background: var(--bg-color);
+    border-radius: 14px;
+}
+
+.meal-photo-section p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.photo-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    border: 2px dashed var(--border-color);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.photo-upload:hover {
+    border-color: var(--primary-color);
+    background: var(--primary-light);
+}
+
+.photo-upload span:first-child {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+.photo-upload span:last-child {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.photo-result {
+    margin-top: 10px;
+}
+
+.photo-result img {
+    max-width: 100%;
+    border-radius: 14px;
+    margin-bottom: 8px;
+}
+
+.photo-result .estimated-cal {
+    font-size: 14px;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* ===== 运动打卡 ===== */
+.exercise-recommendation {
+    margin-bottom: 15px;
+}
+
+.exercise-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-color);
+    border-radius: 14px;
+    margin-bottom: 10px;
+}
+
+.exercise-emoji {
+    font-size: 32px;
+}
+
+.exercise-info {
+    flex: 1;
+}
+
+.exercise-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.exercise-cal {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.custom-exercise {
+    padding: 10px 0;
+}
+
+.exercise-list {
+    padding: 10px 0;
+}
+
+.exercise-record {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-color);
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.exercise-record .exercise-name-text {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.exercise-record .exercise-detail {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.exercise-record .exercise-cal-burn {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.empty-tip {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
+    font-size: 14px;
+}
+
+/* ===== 设置页 ===== */
+.settings-form {
+    padding: 10px 0;
+}
+
+.settings-theme {
+    padding: 10px 0;
+}
+
+.btn-secondary {
+    width: 100%;
+    padding: 14px;
+    background: var(--bg-color);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+    background: var(--primary-light);
+    border-color: var(--primary-color);
+}
+
+/* ===== 30天计划日历 ===== */
+.plan-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.plan-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color);
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.plan-day:hover {
+    border-color: var(--primary-color);
+}
+
+.plan-day.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.plan-day .day-num {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.plan-day .day-label {
+    font-size: 10px;
+    margin-top: 2px;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 400px) {
+    .sidebar {
+        width: 120px;
+        padding: 10px 8px;
+    }
+
+    .nav-item {
+        font-size: 12px;
+        padding: 8px 6px;
+    }
+
+    .goal-progress {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .goal-stats {
+        width: 100%;
+    }
+
+    .calorie-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== SVG渐变定义 ===== */
+svg defs {
+    display: none;
+}
